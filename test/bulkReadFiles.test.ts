@@ -49,6 +49,32 @@ test('readAndSummarize rejects when the backend is unreachable', async (t) => {
   );
 });
 
+test('readAndSummarize preserves a sub-path in the backstage base URL', async (t) => {
+  let receivedUrl: string | undefined;
+  const backend = createHttpServer((req, res) => {
+    receivedUrl = req.url;
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ summary: '- widget.ts: exports renderWidget()' }));
+  });
+  await new Promise<void>((resolve) => backend.listen(0, resolve));
+  const port = (backend.address() as any).port;
+  t.after(() => backend.close());
+
+  const dir = await mkdtemp(path.join(tmpdir(), 'bulk-read-subpath-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const filePath = path.join(dir, 'widget.ts');
+  await writeFile(filePath, 'export function renderWidget() {}');
+
+  await readAndSummarize(
+    { paths: [filePath], query: 'what does this file export?' },
+    // A Backstage instance hosted under a sub-path must keep that sub-path in
+    // the request URL, not have it silently discarded.
+    { backstageUrl: `http://127.0.0.1:${port}/backstage` },
+  );
+
+  assert.equal(receivedUrl, '/backstage/api/context-router/modes/bulk-reader');
+});
+
 test('readAndSummarize rejects when the backend returns a non-2xx status', async (t) => {
   const backend = createHttpServer((_req, res) => {
     res.writeHead(500);

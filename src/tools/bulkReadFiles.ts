@@ -13,14 +13,26 @@ export async function readAndSummarize(
 
   const request = BulkReadRequestSchema.parse({ query: input.query, files });
 
-  const res = await fetch(new URL('/api/context-router/modes/bulk-reader', opts.backstageUrl), {
+  // Join relative to a trailing-slash base so a Backstage instance hosted at a
+  // sub-path (e.g. https://company.com/backstage) isn't discarded: resolving an
+  // absolute '/api/...' path against a base always replaces the base's own path.
+  const base = opts.backstageUrl.endsWith('/') ? opts.backstageUrl : `${opts.backstageUrl}/`;
+  const url = new URL('api/context-router/modes/bulk-reader', base);
+
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
+    // Slightly longer than the backend's own Gemini timeout, so a stalled backend
+    // produces the backend's real error instead of a client-side abort here.
+    signal: AbortSignal.timeout(150_000),
   });
 
   if (!res.ok) {
-    throw new Error(`context-router backend returned ${res.status}`);
+    const detail = await res.text().catch(() => '');
+    throw new Error(
+      `context-router backend returned ${res.status}${detail ? `: ${detail.slice(0, 200)}` : ''}`,
+    );
   }
 
   const response = BulkReadResponseSchema.parse(await res.json());
