@@ -6,6 +6,7 @@
   "bin": { "context-router-daemon": "./src/index.ts" },
   "scripts": {
     "start": "tsx src/index.ts",
+    "bench": "tsx bench/bulk-read-bench.ts",
     "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
