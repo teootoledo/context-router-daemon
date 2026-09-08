@@ -1,0 +1,19 @@
+{
+  "name": "@context-router/daemon",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": { "context-router-daemon": "./src/index.ts" },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@context-router/contract": "file:../context-router-contract",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
+}
