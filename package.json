@@ -1,6 +1,7 @@
 {
   "name": "@teootoledo/context-router-daemon",
   "version": "0.1.0",
+  "engines": { "node": ">=22.13.0" },
   "description": "Local MCP daemon exposing bulk_read_files; owns all filesystem access for the context-router system.",
   "license": "MIT",
   "type": "module",
