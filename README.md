@@ -17,7 +17,7 @@ Depends on [`@teootoledo/context-router-contract`](https://github.com/teootoledo
 
 Node 22+. TypeScript runs through [`tsx`](https://github.com/privatenumber/tsx), never `node --experimental-strip-types` — no Jest, no Vitest, no build step.
 
-**Known limitation:** the `bin` entry above points at raw TypeScript with no shebang, so `npx @teootoledo/context-router-daemon` does not yet work as a direct executable — use `npm start` for now. Supporting bare `npx` execution needs either a build step or a compiled shim, both a deliberate non-goal while this project stays tsx-only.
+**Known limitation:** the package's `bin` entry points at raw TypeScript with no shebang, so `npx @teootoledo/context-router-daemon` does not yet work as a direct executable — use `npm start` for now. Supporting bare `npx` execution needs either a build step or a compiled shim, both a deliberate non-goal while this project stays tsx-only.
 
 ## Contributing
 
