@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { BulkReadRequestSchema, BulkReadResponseSchema } from '@context-router/contract';
+import { BulkReadRequestSchema, BulkReadResponseSchema } from '@teootoledo/context-router-contract';
 
 export async function readAndSummarize(
   input: { paths: string[]; query: string },

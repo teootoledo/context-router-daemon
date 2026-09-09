@@ -4,9 +4,15 @@
   "description": "Local MCP daemon exposing bulk_read_files; owns all filesystem access for the context-router system.",
   "license": "MIT",
   "type": "module",
-  "bin": { "context-router-daemon": "./src/index.ts" },
-  "files": ["src"],
-  "publishConfig": { "access": "public" },
+  "bin": {
+    "context-router-daemon": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/teootoledo/context-router-daemon.git"
@@ -21,8 +27,8 @@
     "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
-    "@context-router/contract": "file:../context-router-contract",
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "@teootoledo/context-router-contract": "^0.1.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
