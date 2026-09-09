@@ -1,9 +1,20 @@
 {
-  "name": "@context-router/daemon",
+  "name": "@teootoledo/context-router-daemon",
   "version": "0.1.0",
-  "private": true,
+  "description": "Local MCP daemon exposing bulk_read_files; owns all filesystem access for the context-router system.",
+  "license": "MIT",
   "type": "module",
   "bin": { "context-router-daemon": "./src/index.ts" },
+  "files": ["src"],
+  "publishConfig": { "access": "public" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teootoledo/context-router-daemon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/teootoledo/context-router-daemon/issues"
+  },
+  "homepage": "https://github.com/teootoledo/context-router-daemon#readme",
   "scripts": {
     "start": "tsx src/index.ts",
     "bench": "tsx bench/bulk-read-bench.ts",
