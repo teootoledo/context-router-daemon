@@ -16,6 +16,7 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm test
+      - run: npm run build:hooks && git diff --exit-code adapters/claude-code/hooks/*.js
 
   commitlint:
     if: github.event_name == 'pull_request'

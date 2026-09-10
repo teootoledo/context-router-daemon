@@ -5,7 +5,7 @@ A Claude Code plugin that blocks native large file reads (`Read` over ~350 lines
 ## What it does
 
 - `hooks/checkFileSize.js` — a `PreToolUse` hook on `Read`. Allows targeted reads (an `offset`/`limit` already set) and anything at or under the threshold; blocks everything else with a reason telling the agent to call `bulk_read_files` instead.
-- `hooks/checkBashRead.js` — the same check for `cat`/`head`/`tail`/`less`/`more` invoked via `Bash`, so the Read hook can't be trivially routed around. Piped and redirected commands are always allowed through — they're already targeted/filtered reads.
+- `hooks/checkBashRead.js` — the same check for `cat`/`head`/`tail`/`less`/`more` invoked via `Bash`. This is best-effort coverage of the common cases, not a hard guarantee — compound commands, multi-argument reads, and less common tools can still get through. Piped and redirected commands are always allowed through — they're already targeted/filtered reads.
 - `skills/bulk-reader/SKILL.md` — teaches the agent to reach for `bulk_read_files` proactively (large files, 3+ files, big diffs), and to verify exact values before using them in an edit.
 
 ## Threshold
@@ -22,11 +22,11 @@ git clone https://github.com/teootoledo/context-router-daemon.git
 
 Then, in Claude Code, add it as a local plugin directory pointing at `context-router-daemon/adapters/claude-code` (see Claude Code's current plugin-directory documentation for the exact mechanism).
 
-The daemon itself must also be configured and running (see the [main README](../../README.md)) — this plugin only redirects to `bulk_read_files`; it doesn't replace the daemon.
+**The daemon must already be configured and running as an MCP server before you install this plugin** (see the [main README](../../README.md)) — this plugin only redirects to `bulk_read_files`; installing it does not itself make that tool available. If the daemon isn't reachable, there is no fallback to a normal read — the hook still blocks; the only paths still open are an `offset`/`limit`-targeted `Read`, or a `Bash` command this plugin doesn't recognize as a read.
 
 ## Rebuilding the hooks
 
-`hooks/checkFileSize.js` and `hooks/checkBashRead.js` are built from `hooks/src/*.ts` and committed directly — there's no build step at install time. After changing the source, rebuild and commit the output:
+`hooks/checkFileSize.js` and `hooks/checkBashRead.js` are built from `hooks/src/*.ts` and committed directly — there's no build step at install time. After changing the source, run `npm install` (if you haven't already — this installs `esbuild`) and rebuild from the repo root (`context-router-daemon/`, not this `adapters/claude-code/` directory), then commit the output:
 
 ```bash
 npm run build:hooks
