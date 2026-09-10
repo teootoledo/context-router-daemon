@@ -1,7 +1,9 @@
 {
   "name": "@teootoledo/context-router-daemon",
   "version": "0.1.0",
-  "engines": { "node": ">=22.13.0" },
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "description": "Local MCP daemon exposing bulk_read_files; owns all filesystem access for the context-router system.",
   "license": "MIT",
   "type": "module",
@@ -25,7 +27,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "bench": "tsx bench/bulk-read-bench.ts",
-    "test": "tsx --test test/*.test.ts"
+    "test": "tsx --test test/*.test.ts",
+    "build:hooks": "esbuild adapters/claude-code/hooks/src/checkFileSize.ts adapters/claude-code/hooks/src/checkBashRead.ts --bundle --platform=node --format=esm --outdir=adapters/claude-code/hooks --banner:js=\"#!/usr/bin/env node\" && chmod +x adapters/claude-code/hooks/checkFileSize.js adapters/claude-code/hooks/checkBashRead.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
@@ -35,6 +38,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "esbuild": "^0.28.2",
     "semantic-release": "^25.0.9",
     "tsx": "^4.19.0"
   }
