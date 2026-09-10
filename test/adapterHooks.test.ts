@@ -3,7 +3,12 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { countLines, resolveMinLines, buildReason } from '../adapters/claude-code/hooks/src/shared.ts';
+import {
+  countLines,
+  resolveMinLines,
+  buildReason,
+  serializeHookOutput,
+} from '../adapters/claude-code/hooks/src/shared.ts';
 
 test('countLines counts newline characters like `wc -l`', () => {
   const dir = mkdtempSync(join(tmpdir(), 'adapter-hooks-'));
@@ -126,4 +131,26 @@ test('decideBashRead allows a command it does not recognize as a read', () => {
 test('decideBashRead allows an empty command', () => {
   const result = decideBashRead({}, 350, () => 800);
   assert.deepEqual(result, { decision: 'allow' });
+});
+
+test('serializeHookOutput returns empty string for allow (Claude Code treats empty PreToolUse stdout as a no-op allow)', () => {
+  assert.equal(serializeHookOutput({ decision: 'allow' }), '');
+});
+
+test('serializeHookOutput wraps a block decision in the real PreToolUse hookSpecificOutput schema', () => {
+  const output = serializeHookOutput({ decision: 'block', reason: 'because reasons' });
+  const parsed = JSON.parse(output);
+  assert.deepEqual(parsed, {
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'deny',
+      permissionDecisionReason: 'because reasons',
+    },
+  });
+});
+
+test('countLines returns undefined for a directory (not a regular file) instead of hanging', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'adapter-hooks-'));
+  assert.equal(countLines(dir), undefined);
+  rmSync(dir, { recursive: true, force: true });
 });
