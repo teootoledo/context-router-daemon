@@ -1,0 +1,11 @@
+{
+  "name": "context-router",
+  "displayName": "Context Router",
+  "version": "0.1.0",
+  "description": "Blocks large native file reads and redirects to the context-router-daemon's bulk_read_files MCP tool, so raw file content never enters the calling agent's context window.",
+  "author": { "name": "teootoledo" },
+  "repository": "https://github.com/teootoledo/context-router-daemon",
+  "license": "MIT",
+  "keywords": ["token-optimization", "context-router", "bulk-read"],
+  "skills": "./skills/"
+}
